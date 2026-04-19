@@ -61,6 +61,32 @@ def main():
     print(significance_df)
     
     
+    # PART 4: Data Subset Analysis
+    query = """
+    SELECT * FROM cell_count
+    WHERE condition = 'melanoma' AND treatment = 'miraclib AND 
+    sample_type = 'PBMC AND time_from_treatment = 0     
+
+    """    
+    baseline_df = pd.read_sql(query, conn)
+    
+    print("\nPart 4: Baseline Melanoma PBMC Samples on Miraclib")
+    print(f"Total baseline samples: {len(baseline_df)}")
+    
+    # Samples per Project
+    samples_per_project = baseline_df.groupby('project')['sample'].count()
+    print("\nSsamples per project:", samples_per_project)
+    
+    # Subjects by Response
+    subjects_by_response = baseline_df.drop_duplicates('subjects').groupby('response')['subject'].count()
+    print("\nSubjects by response:", subjects_by_response)
+    
+    # Subjects by sex
+    subjects_by_sex = baseline_df.drop_duplicates('subjects').groupby('sex')['subject'].count()
+    print("\nSubjects by sex:", subjects_by_sex)
+    
+    
+    
     conn.close()
     
 if __name__ == "__main__":
