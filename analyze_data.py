@@ -3,7 +3,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.stats import mannwhitneyu
-
+import os
+os.makedirs("outputs", exist_ok=True)
 
 def main():
     conn = sqlite3.connect("cell-count.db")
@@ -43,8 +44,6 @@ def main():
     plt.title('Cell Population Frequencies: Responders vs Non-Responders (Melanoma, Miraclib, PBMC)')
     plt.xticks(rotation=45)
     plt.tight_layout()
-    plt.savefig("cell_population_frequencies_boxplot.png")
-    plt.show()
     
     # Statistical Significance
     results = []
@@ -94,6 +93,16 @@ def main():
     else:
         print("\nThere is no data for Melanoma male responders at time=0")
     
+    
+    # Save analysis to outputs folder for dashboard
+    initial_analysis.to_csv("outputs/initial_analysis.csv", index=False)
+    significance_df.to_csv("outputs/significance_results.csv", index=False)
+
+    samples_per_project.reset_index().to_csv("outputs/samples_per_project.csv", index=False)
+    subjects_by_response.reset_index().to_csv("outputs/subjects_by_response.csv", index=False)
+    subjects_by_sex.reset_index().to_csv("outputs/subjects_by_sex.csv", index=False)
+
+    plt.savefig("outputs/cell_population_frequencies_boxplot.png")
     conn.close()
     
 if __name__ == "__main__":
