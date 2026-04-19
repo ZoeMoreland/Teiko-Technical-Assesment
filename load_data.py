@@ -13,6 +13,15 @@ def main():
     cell_count_df.to_sql("cell_count", conn_cell_count, if_exists="replace", index=False)
 
     conn_cell_count.commit()
+    
+    intial_analysis = pd.DataFrame(columns=['sample', 'total_count', 'population', 'count', 'percentage'])
+    
+    intial_analysis['sample'] = cell_count_df['sample']
+    
+    
+    
+    
+    
     conn_cell_count.close()
     
 
