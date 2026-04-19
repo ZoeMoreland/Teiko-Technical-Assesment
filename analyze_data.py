@@ -64,9 +64,10 @@ def main():
     # PART 4: Data Subset Analysis
     query = """
     SELECT * FROM cell_count
-    WHERE condition = 'melanoma' AND treatment = 'miraclib AND 
-    sample_type = 'PBMC AND time_from_treatment = 0     
-
+    WHERE condition = 'melanoma' 
+    AND treatment = 'miraclib'
+    AND sample_type = 'PBMC' 
+    AND time_from_treatment_start = 0     
     """    
     baseline_df = pd.read_sql(query, conn)
     
@@ -78,14 +79,20 @@ def main():
     print("\nSsamples per project:", samples_per_project)
     
     # Subjects by Response
-    subjects_by_response = baseline_df.drop_duplicates('subjects').groupby('response')['subject'].count()
+    subjects_by_response = baseline_df.drop_duplicates('subject').groupby('response')['subject'].count()
     print("\nSubjects by response:", subjects_by_response)
     
     # Subjects by sex
-    subjects_by_sex = baseline_df.drop_duplicates('subjects').groupby('sex')['subject'].count()
+    subjects_by_sex = baseline_df.drop_duplicates('subject').groupby('sex')['subject'].count()
     print("\nSubjects by sex:", subjects_by_sex)
     
-    
+    # Extra Question about average number of B cells at time=0 for Melanoma males
+    melanoma_males_responders = baseline_df[(baseline_df['sex'] == 'M') & (baseline_df['response'] == 'yes')]
+    if len(melanoma_males_responders) > 0:
+        avg_b_cells = melanoma_males_responders['b_cell'].mean()
+        print(f"\nAverage number of B cells for Melanoma males responders at time=0: {avg_b_cells:.2f}")
+    else:
+        print("\nThere is no data for Melanoma male responders at time=0")
     
     conn.close()
     
